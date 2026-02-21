@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Arfur | Pitch Deck 2026 â Mobile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a14;
+            --primary: #1a1a4e;
+            --primary-light: #2a2a72;
+            --secondary: #f5a623;
+            --accent: #e07a5f;
+            --text-main: #fafaf8;
+            --text-muted: #a0a0b0;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+            line-height: 1.5;
+            height: 100%;
+            touch-action: pan-y;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Ambient Glows â smaller for mobile */
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .glow-1 { top: -15%; left: -15%; width: 60%; height: 40%; background: var(--primary); }
+        .glow-2 { bottom: -10%; right: -15%; width: 50%; height: 35%; background: rgba(245,166,35,0.12); }
+
+        /* Progress */
+        #progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--secondary), var(--accent));
+            width: 0%; transition: width 0.4s ease; z-index: 20;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.7rem; color: var(--text-muted); z-index: 20;
+            font-family: 'Outfit', sans-serif; letter-spacing: 1px;
+            background: linear-gradient(to top, var(--bg-dark) 60%, transparent);
+        }
+
+        /* Dot navigation */
+        .dot-nav {
+            position: fixed; right: 0.75rem; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 6px; z-index: 20;
+        }
+        .dot-nav span {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: rgba(255,255,255,0.15); transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .dot-nav span.active {
+            background: var(--secondary); transform: scale(1.5);
+        }
+
+        /* Deck & Slides */
+        #deck { position: relative; width: 100%; height: 100%; z-index: 1; }
+
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateY(30px);
+            padding: 1.5rem 1.5rem 4rem 1.5rem;
+            overflow-y: auto;
+        }
+        .slide.active { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .slide-content { width: 100%; max-width: 500px; }
+
+        /* Typography */
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; line-height: 1.1; margin-bottom: 1rem; }
+
+        .title-huge {
+            font-size: 4rem; font-weight: 800; letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .slide h2 { font-size: 2rem; font-weight: 800; }
+        .slide h2 .highlight {
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        p { font-size: 1rem; color: var(--text-muted); margin-bottom: 1rem; font-weight: 300; }
+
+        .tagline { font-size: 1.3rem; color: var(--secondary); font-weight: 400; letter-spacing: 2px; }
+
+        /* Stats */
+        .stats-row { display: flex; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .stat-box { display: flex; flex-direction: column; }
+        .stat-number {
+            font-family: 'Outfit', sans-serif; font-size: 2.5rem;
+            font-weight: 800; color: var(--secondary); line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.75rem; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1.5px; margin-top: 0.3rem;
+        }
+
+        /* Lists */
+        ul { list-style: none; }
+        ul li {
+            font-size: 0.95rem; color: var(--text-main); margin-bottom: 1rem;
+            padding-left: 1.25rem; position: relative; font-weight: 300;
+        }
+        ul li::before {
+            content: ''; position: absolute; left: 0; top: 0.55em;
+            width: 6px; height: 6px; background: var(--secondary); border-radius: 50%;
+        }
+
+        /* Placeholder */
+        .placeholder {
+            background: var(--glass-bg); border: 1px dashed var(--glass-border);
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 2rem; min-height: 180px;
+            color: var(--text-muted); font-family: 'Outfit', sans-serif;
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Flow steps */
+        .flow-container {
+            display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem;
+        }
+        .flow-step {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            padding: 1.25rem; border-radius: 12px; text-align: center;
+        }
+        .flow-arrow {
+            color: var(--text-muted); font-size: 1.2rem; text-align: center;
+            transform: rotate(90deg);
+        }
+
+        /* Flow horizontal for Tales Universe */
+        .flow-horizontal {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 2rem;
+        }
+        .flow-horizontal .flow-step { font-size: 0.85rem; padding: 1rem; }
+
+        /* Revenue grid */
+        .revenue-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;
+        }
+        .revenue-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 1.25rem; text-align: center;
+        }
+        .revenue-card h3 { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .revenue-card p { font-size: 0.8rem; margin-bottom: 0; }
+
+        /* Team grid */
+        .team-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.5rem;
+        }
+        .team-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 1rem; text-align: center;
+            font-size: 0.8rem; color: var(--text-muted);
+            font-family: 'Outfit', sans-serif; text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .team-card.wide { grid-column: span 2; }
+
+        /* Impact stats */
+        .impact-row {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-top: 2rem;
+        }
+        .impact-box { text-align: center; }
+        .impact-box .stat-number { font-size: 1.8rem; }
+        .impact-box .stat-label { font-size: 0.65rem; }
+
+        /* Center */
+        .center-text { text-align: center; }
+
+        /* Swipe hint */
+        .swipe-hint {
+            position: fixed; bottom: 3rem; left: 50%; transform: translateX(-50%);
+            font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px;
+            font-family: 'Outfit', sans-serif; text-transform: uppercase;
+            animation: fadeInOut 3s ease-in-out forwards;
+            z-index: 20;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; display: none; }
+        }
+
+        /* Subtle entrance animation for slide content */
+        .slide.active .slide-content {
+            animation: slideUp 0.5s ease-out forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ambient-glow glow-1"></div>
+<div class="ambient-glow glow-2"></div>
+<div id="progress-bar"></div>
+
+<div class="footer">
+    <div>ARFUR.AI</div>
+    <div id="slide-counter">1 / 14</div>
+</div>
+
+<div class="dot-nav" id="dot-nav"></div>
+
+<div class="swipe-hint">Swipe to navigate â</div>
+
+<div id="deck">
+
+    <!-- 1. Title -->
+    <section class="slide active">
+        <div class="slide-content center-text">
+            <h1 class="title-huge">ARFUR</h1>
+            <p class="tagline">Where Heritage Meets AI</p>
+            <p style="font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 1.5rem;">Pitch Deck 2026</p>
+        </div>
+    </section>
+
+    <!-- 2. Problem -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2>Heritage is<br><span class="highlight">Fading.</span></h2>
+            <p>In a hyper-digital world, cultural roots are being lost.</p>
+            <ul>
+                <li>Diaspora families struggle to pass down cultural identity.</li>
+                <li>Integration programs lack engaging, empathetic tools.</li>
+                <li>Children grow up disconnected from their heritage.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 3. Solution -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2>The <span class="highlight">Arfur</span> Solution</h2>
+            <p>The pedagogical "Netflix for cultural folktales" â powered by AI.</p>
+            <ul>
+                <li><strong>AI-Driven Storytelling:</strong> Interactive folktales adapted for age and empathy.</li>
+                <li><strong>Multilingual:</strong> Seamless reading across generations and languages.</li>
+                <li><strong>Pedagogical Core:</strong> A bridge to identity, not just entertainment.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 4. Filipino Tales -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2>Filipino Tales<br><span class="highlight">Proof of Concept</span></h2>
+            <p>Not just an idea. A live, production-ready platform.</p>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Authentic Stories</span>
+                </div>ÂöFcà¢ÆFb6Æ73Ò'7FBÖ&÷#à¢Ç7â6Æ73Ò'7FBÖçVÖ&W"#ã#R³Â÷7ãà¢Ç7â6Æ73Ò'7FBÖÆ&VÂ#äÆæwVvW2EE2Â÷7ãà¢ÂöFcà¢ÂöFcà¢ÆFb6Æ73Ò'Æ6VöÆFW"#à¢´ÔtS¢fÆæòFÆW2GVòÕ&VFærÖöFUÐ¢ÂöFcà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒRâæ÷&F2FÆW2ÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB#à¢Æ#äæ÷&F2FÆW3Æ'#ãÇ7â6Æ73Ò&vÆvB#äw&÷wFVævæSÂ÷7ããÂö#à¢Çäæ÷&F2F7÷&²7FFRÖ&6¶VBçFVw&Föâ&öw&×2ãÂ÷à¢ÇVÃà¢ÆÆãÇ7G&öæsä#$3£Â÷7G&öæsâ6öææV7FærF7÷&fÖÆW2vÆö&ÆÇãÂöÆà¢ÆÆãÇ7G&öæsä#$s£Â÷7G&öæsâFööÇ2f÷"×Væ6ÆFW2b&VgVvVRçFVw&FöâãÂöÆà¢ÆÆãb²&Vvöç3¢æ÷'vÂ7vVFVâÂFVæÖ&²ÂfæÆæBÂ6VÆæBÂ<:ÖãÂöÆà¢Â÷VÃà¢ÆFb6Æ73Ò'Æ6VöÆFW"#à¢´ÔtS¢æ÷&F2FÆW2çFVw&FöâV%Ð¢ÂöFcà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒbâFV6ÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB#à¢Æ#ä6Æ÷VBÔæFfRcÆ'#ãÇ7â6Æ73Ò&vÆvB#äÔf'7CÂ÷7ããÂö#à¢ÇäæWr7VÇGW&Â&Vvöç2ÆVæ6â.(	32ÖöçF2ãÂ÷à¢ÇVÃà¢ÆÆãÇ7G&öæsäVævæS£Â÷7G&öæsâ6ÆVFR÷W2f÷"7F÷'bG&ç6ÆFöãÂöÆà¢ÆÆãÇ7G&öæsäÖVF£Â÷7G&öæsâÖF¦÷W&æWcr²dÅUÂVÆWfVäÆ'2EE3ÂöÆà¢ÆÆãÇ7G&öæså7F6³£Â÷7G&öæsâ&V7BÂGU67&BÂ7W&6SÂöÆà¢ÆÆãÇ7G&öæsåVÆæS£Â÷7G&öæsâÖ767FVBFWbÂ²6öÖÖG3ÂöÆà¢Â÷VÃà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒrâÖ&¶WBÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB#à¢Æ#äÖ76fSÆ'#ãÇ7â6Æ73Ò&vÆvB#ävÆö&ÂÖ&¶WCÂ÷7ããÂö#à¢Çä'&FværVEFV6æBV&Æ2çFVw&Föâ6V7F÷'2ãÂ÷à¢ÆFb6Æ73Ò'7FG2×&÷r"7GÆSÒ&fÆW×w&¢w&²#à¢ÆFb6Æ73Ò'7FBÖ&÷"7GÆSÒ'vGF¢CRS²#à¢Ç7â6Æ73Ò'7FBÖçVÖ&W"#ãÒ³Â÷7ãà¢Ç7â6Æ73Ò'7FBÖÆ&VÂ#äfÆæòF7÷&Â÷7ãà¢ÂöFcà¢ÆFb6Æ73Ò'7FBÖ&÷"7GÆSÒ'vGF¢CRS²#à¢Ç7â6Æ73Ò'7FBÖçVÖ&W"#ä×VÇFÔÓÂ÷7ãà¢Ç7â6Æ73Ò'7FBÖÆ&VÂ#äæ÷&F2F7÷&Â÷7ãà¢ÂöFcà¢ÂöFcà¢ÆFb7GÆSÒ&Ö&vâ×F÷¢ãW&VÓ²#à¢ÆFb6Æ73Ò'7FBÖ&÷#à¢Ç7â6Æ73Ò'7FBÖçVÖ&W""7GÆSÒ&föçB×6¦S¢'&VÓ²#ä#$sÂ÷7ãà¢Ç7â6Æ73Ò'7FBÖÆ&VÂ#äÖ76fRæ÷&F2V&Æ2çFVw&Föâ'VFvWG3Â÷7ãà¢ÂöFcà¢ÂöFcà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒâ&WfVçVRÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB6VçFW"×FWB#à¢Æ#äGVÂ&WfVçVSÆ'#ãÇ7â6Æ73Ò&vÆvB#å7G&V×3Â÷7ããÂö#à¢ÆFb6Æ73Ò'&WfVçVRÖw&B#à¢ÆFb6Æ73Ò'&WfVçVRÖ6&B#à¢Æ27GÆSÒ&6öÆ÷#¢f"Ò×6V6öæF'²#ä#$3Âö3à¢Çå&VÖVÒ7V'67&Föç2f÷"F7÷&fÖÆW3Â÷à¢ÂöFcà¢ÆFb6Æ73Ò'&WfVçVRÖ6&B#à¢Æ27GÆSÒ&6öÆ÷#¢f"ÒÖ66VçB²#ä#$sÂö3à¢ÇäÆ6Vç6ærf÷"×Væ6ÆFW2b66ööÇ3Â÷à¢ÂöFcà¢ÂöFcà¢Ç7GÆSÒ&Ö&vâ×F÷¢ãW&VÓ²föçB×6¦S¢ã&VÓ²#ãÇ7G&öæsäWfW'æWr7VÇGW&RÒæWr&WfVçVR7G&VÓÂ÷7G&öæsâvFæV"×¦W&òÖ&væÂ6÷7BãÂ÷à¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒâG&7FöâÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB#à¢Æ#åG&7FöâcÆ'#ãÇ7â6Æ73Ò&vÆvB#äÖÆW7FöæW3Â÷7ããÂö#à¢ÇVÃà¢ÆÆãÇ7G&öæsäfÆæòFÆW3£Â÷7G&öæsâÆfRb&öGV7FöâÕ&VG)ÈSÂöÆà¢ÆÆãÇ7G&öæså&V'&æFæs£Â÷7G&öæsâ&gW"&öÆÆ÷WB6ö×ÆWFR)ÈSÂöÆà¢ÆÆãÇ7G&öæsåFV67F6³£Â÷7G&öæsâ&÷fVâb66Æ&ÆR)ÈSÂöÆà¢ÆÆãÇ7G&öæsäæWC£Â÷7G&öæsâæ÷&F2FÆW2ÆVæ6bææ÷fFöâæ÷'v	ùIÃÂöÆà¢Â÷VÃà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒâFVÒÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB#à¢Æ#åFRFVÓ£Æ'#ãÇ7â6Æ73Ò&vÆvB#äÆfærFRÖ76öãÂ÷7ããÂö#à¢Çä×VÇF7VÇGW&Âf÷VæFW'2vFFV6æ6ÂÂ7VÇGW&Âb6Ææ6ÂWW'F6RãÂ÷à¢ÆFb6Æ73Ò'FVÒÖw&B#à¢ÆFb6Æ73Ò'FVÒÖ6&B#äÔ£Æ'#ãÇ7â7GÆSÒ&6öÆ÷#¢f"Ò×6V6öæF'²föçB×6¦S¢ãcW&VÓ²#ä4TòòFV6bFW6vãÂ÷7ããÂöFcà¢ÆFb6Æ73Ò'FVÒÖ6&B#ä6òÖf÷VæFW#Æ'#ãÇ7â7GÆSÒ&6öÆ÷#¢f"Ò×6V6öæF'²föçB×6¦S¢ãcW&VÓ²#ä7VÇGW&ÂbvÆö&Â÷3Â÷7ããÂöFcà¢ÆFb6Æ73Ò'FVÒÖ6&BvFR#ä6òÖf÷VæFW#Æ'#ãÇ7â7GÆSÒ&6öÆ÷#¢f"Ò×6V6öæF'²föçB×6¦S¢ãcW&VÓ²#å7V6Æ7B6ÆB76öÆöv7B(	Bõ4RÆVCÂ÷7ããÂöFcà¢ÂöFcà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒâfÇVW2ÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB6VçFW"×FWB#à¢Æ#äG&fVâ'Æ'#ãÇ7â6Æ73Ò&vÆvB#äæ÷&F2fÇVW3Â÷7ããÂö#à¢ÇäWF72ÂV×FÂ7W7Fæ&ÆGÂG&ç7&Væ7ãÂ÷à¢ÆFb6Æ73Ò&×7B×&÷r#à¢ÆFb6Æ73Ò&×7BÖ&÷#à¢Ç7â6Æ73Ò'7FBÖçVÖ&W"#ãSÂ÷7ãà¢Ç7â6Æ73Ò'7FBÖÆ&VÂ#ä6ÆB6&FW3Â÷7ãà¢ÂöFcà¢ÆFb6Æ73Ò&×7BÖ&÷#à¢Ç7â6Æ73Ò'7FBÖçVÖ&W"#ãSÂ÷7ãà¢Ç7â6Æ73Ò'7FBÖÆ&VÂ#äVçf&öæÖVçFÃÂ÷7ãà¢ÂöFcà¢ÆFb6Æ73Ò&×7BÖ&÷#à¢Ç7â6Æ73Ò'7FBÖçVÖ&W""7GÆSÒ&föçB×6¦S¢ã'&VÓ²#å&ò&öæóÂ÷7ãà¢Ç7â6Æ73Ò'7FBÖÆ&VÂ#äçFVw&FöãÂ÷7ãà¢ÂöFcà¢ÂöFcà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒ"âgVæFærÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB#à¢Æ#ägVæFæsÆ'#ãÇ7â6Æ73Ò&vÆvB#ä6³Â÷7ããÂö#à¢Çä66VÆW&Færæ÷&F2Ö&¶WBVæWG&FöâãÂ÷à¢ÇVÃà¢ÆÆãÇ7G&öæsåF&vWC£Â÷7G&öæsâ"ã(	22ãÔäô³ÂöÆà¢ÆÆãÇ7G&öæså&Ö'£Â÷7G&öæsâææ÷fFöâæ÷'vÂöÆà¢ÆÆãÇ7G&öæså6V6öæF'£Â÷7G&öæsâ7G&FVv2ævVÇ3ÂöÆà¢ÆÆãÇ7G&öæsåFÖVÆæS£Â÷7G&öæsâ.(	3ÖöçF2Fò'&V²ÖWfVãÂöÆà¢Â÷VÃà¢ÆFb6Æ73Ò'Æ6VöÆFW""7GÆSÒ&ÖâÖVvC¢#²#à¢´4%C¢W6RöbgVæG2'&V¶F÷våÐ¢ÂöFcà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒ2âf6öâÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB6VçFW"×FWB#à¢Æ#åFRÇ7â6Æ73Ò&vÆvB#åFÆW2VæfW'6SÂ÷7ããÂö#à¢ÇäöæRÆFf÷&ÒâæfæFR7VÇGW&W2ãÂ÷à¢ÆFb6Æ73Ò&fÆ÷rÖ÷&¦öçFÂ#à¢ÆFb6Æ73Ò&fÆ÷r×7FW"7GÆSÒ&&÷&FW"Ö6öÆ÷#¢f"Ò×6V6öæF'²#äfÆæòFÆW2)ÈSÂöFcà¢ÆFb6Æ73Ò&fÆ÷r×7FW"7GÆSÒ&&÷&FW"Ö6öÆ÷#¢f"ÒÖ66VçB²#äæ÷&F2FÆW2	ùIÃÂöFcà¢ÆFb6Æ73Ò&fÆ÷r×7FW#äg&6âFÆW3ÂöFcà¢ÆFb6Æ73Ò&fÆ÷r×7FW#äÆFâFÆW2ââãÂöFcà¢ÂöFcà¢ÂöFcà¢Â÷6V7Föãà ¢ÂÒÒBâ5DÒÓà¢Ç6V7Föâ6Æ73Ò'6ÆFR#à¢ÆFb6Æ73Ò'6ÆFRÖ6öçFVçB6VçFW"×FWB#à¢Æ"7GÆSÒ&föçB×6¦S¢"ãW&VÓ²föçBÖfÖÇ¢t÷WFfBrÂ6ç2×6W&c²föçB×vVvC¢²&6¶w&÷VæC¢ÆæV"Öw&FVçB3VFVrÂ6ffbRÂf"Ò×FWBÖ×WFVBR²×vV&¶BÖ&6¶w&÷VæBÖ6Æ¢FWC²×vV&¶B×FWBÖfÆÂÖ6öÆ÷#¢G&ç7&VçC²#äÆWBw2&W6W'fRW&FvRãÂö#à¢Ç6Æ73Ò'FvÆæR"7GÆSÒ&Ö&vâÖ&÷GFöÓ¢"ãW&VÓ²#åFövWFW"ãÂ÷à¢ÆFb6Æ73Ò'Æ6VöÆFW""7GÆSÒ'vGF¢S²VvC¢S²ÖâÖVvC¢S²Ö&vã¢WFó²&÷&FW"×&FW3¢'²#à¢µ"4ôDUÐ¢ÂöFcà¢Ç7GÆSÒ&Ö&vâ×F÷¢ãW&VÓ²6öÆ÷#¢f"Ò×FWBÖÖâ²föçB×vVvC¢S²föçB×6¦S¢ãW&VÓ²#æVÆÆô&gW"æfæ'7²fæ'7·Âfæ'7²fæ'7¶&gW"æÂ÷à¢ÂöFcà¢Â÷6V7Föãà £ÂöFcà £Ç67&Cà¦Fö7VÖVçBæFDWfVçDÆ7FVæW"tDôÔ6öçFVçDÆöFVBrÂÓâ°¢6öç7B6ÆFW2ÒFö7VÖVçBçVW'6VÆV7F÷$ÆÂrç6ÆFRr°¢6öç7B6÷VçFW"ÒFö7VÖVçBævWDVÆVÖVçD'Bw6ÆFRÖ6÷VçFW"r°¢6öç7B&öw&W74&"ÒFö7VÖVçBævWDVÆVÖVçD'Bw&öw&W72Ö&"r°¢6öç7BF÷DæbÒFö7VÖVçBævWDVÆVÖVçD'BvF÷BÖæbr°¢ÆWB7W'&VçBÒ° ¢òò'VÆBF÷Bæ`¢6ÆFW2æf÷$V6òÂÓâ°¢6öç7BF÷BÒFö7VÖVçBæ7&VFTVÆVÖVçBw7âr°¢bÓÓÒF÷Bæ6Æ74Æ7BæFBv7FfRr°¢F÷BæFDWfVçDÆ7FVæW"v6Æ6²rÂRÓâ²Rç7F÷&÷vFöâ²võFò²Ò°¢F÷DæbæVæD6ÆBF÷B°¢Ò°¢6öç7BF÷G2ÒF÷DæbçVW'6VÆV7F÷$ÆÂw7âr° ¢gVæ7FöâvõFòâ°¢bâÂÇÂâãÒ6ÆFW2æÆVæwF&WGW&ã°¢6ÆFW5¶7W'&VçEÒæ6Æ74Æ7Bç&VÖ÷fRv7FfRr°¢F÷G5¶7W'&VçEÒæ6Æ74Æ7Bç&VÖ÷fRv7FfRr°¢7W'&VçBÒã°¢6ÆFW5¶7W'&VçEÒæ6Æ74Æ7BæFBv7FfRr°¢F÷G5¶7W'&VçEÒæ6Æ74Æ7BæFBv7FfRr°¢6÷VçFW"æææW%FWBÒG¶7W'&VçB²ÒòG·6ÆFW2æÆVæwFÖ°¢&öw&W74&"ç7GÆRçvGFÒG²7W'&VçBò6ÆFW2æÆVæwFÒ¢ÒV°¢Ð ¢òò7vRæFÆæp¢ÆWB7F'EÒÂ7F'EÒÂFfeÒÂFfeÒ°¢6öç7BF&W6öÆBÒS° ¢Fö7VÖVçBæFDWfVçDÆ7FVæW"wF÷V67F'BrÂRÓâ°¢7F'EÒRçF÷V6W5³Òæ6ÆVçE°¢7F'EÒRçF÷V6W5³Òæ6ÆVçE°¢ÒÂ²76fS¢G'VRÒ° ¢Fö7VÖVçBæFDWfVçDÆ7FVæW"wF÷V6VæBrÂRÓâ°¢FfeÒ7F'EÒRæ6ævVEF÷V6W5³Òæ6ÆVçE°¢FfeÒ7F'EÒRæ6ævVEF÷V6W5³Òæ6ÆVçE°¢bÖFæ'2FfeâÖFæ'2FfebbÖFæ'2FfeâF&W6öÆB°¢bFfeâvõFò7W'&VçB²°¢VÇ6RvõFò7W'&VçBÒ°¢Ð¢ÒÂ²76fS¢G'VRÒ° ¢òò¶W&ö&BfÆÆ&6°¢væF÷ræFDWfVçDÆ7FVæW"v¶WF÷vârÂRÓâ°¢bRæ¶WÓÓÒt'&÷u&vBrÇÂRæ¶WÓÓÒrrvõFò7W'&VçB²°¢VÇ6RbRæ¶WÓÓÒt'&÷tÆVgBrvõFò7W'&VçBÒ°¢Ò° ¢òòFÆVgB÷&vBÇfW0¢Fö7VÖVçBævWDVÆVÖVçD'BvFV6²ræFDWfVçDÆ7FVæW"v6Æ6²rÂRÓâ°¢bRæ6ÆVçEâvæF÷ræææW%vGFò"võFò7W'&VçB²°¢VÇ6RvõFò7W'&VçBÒ°¢Ò°§Ò°£Â÷67&Cà£Âö&öGà£ÂöFÖÃà
