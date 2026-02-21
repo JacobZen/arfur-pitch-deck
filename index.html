@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arfur | Pitch Deck 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a14;
+            --primary: #1a1a4e;
+            --primary-light: #2a2a72;
+            --secondary: #f5a623;
+            --accent: #e07a5f;
+            --text-main: #fafaf8;
+            --text-muted: #a0a0b0;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+            line-height: 1.6;
+        }
+
+        /* Ambient Background Glows */
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .glow-1 {
+            top: -10vw;
+            left: -10vw;
+            width: 40vw;
+            height: 40vw;
+            background: var(--primary);
+        }
+        .glow-2 {
+            bottom: -10vw;
+            right: -10vw;
+            width: 30vw;
+            height: 30vw;
+            background: rgba(245, 166, 35, 0.15);
+        }
+
+        /* Layout & Navigation */
+        #deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: scale(0.98) translateY(20px);
+            padding: 4rem;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        .slide-content {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        /* Progress Bar & Footer */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-light), var(--secondary), var(--accent));
+            width: 0%;
+            transition: width 0.4s ease;
+            z-index: 10;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 2rem;
+            left: 4rem;
+            right: 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            z-index: 10;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .title-huge {
+            font-size: clamp(4rem, 10vw, 8rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .slide h2 .highlight {
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        /* Layout Utilities */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--secondary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.5rem;
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+        }
+
+        ul li {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            position: relative;
+            font-weight: 300;
+        }
+
+        ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6em;
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+        }
+
+        /* Image Placeholders */
+        .placeholder {
+            background: var(--glass-bg);
+            border: 1px dashed var(--glass-border);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 3rem;
+            min-height: 400px;
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .placeholder:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+
+        /* Specific Slide Tweaks */
+        .center-text { text-align: center; }
+        .center-text ul li { display: inline-block; margin: 0 1rem; padding: 0; }
+        .center-text ul li::before { display: none; }
+        
+        .tagline {
+            font-size: 2rem;
+            color: var(--secondary);
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+
+        /* Timeline / Flow */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 4rem;
+            gap: 1rem;
+        }
+        .flow-step {
+            flex: 1;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .flow-arrow {
+            color: var(--text-muted);
+            font-size: 2rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <div id="progress-bar"></div>
+
+    <div class="footer">
+        <div>ARFUR.AI â STRICTLY CONFIDENTIAL</div>
+        <div id="slide-counter">1 / 14</div>
+    </div>
+
+    <div id="deck">
+
+        <section class="slide active">
+            <div class="slide-content center-text">
+                <h1 class="title-huge">ARFUR</h1>
+                <p class="tagline">Where Heritage Meets AI</p>
+                <br>
+                <p style="font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase;">Pitch Deck 2026</p>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content grid-2">
+                <div>
+                    <h2>Heritage is <br><span class="highlight">Fading.</span></h2>
+                    <p>In a hyper-digital world, cultural roots are being lost.</p>
+                </div>
+                <div>
+                    <ul>
+                        <li>Diaspora families struggle to pass down cultural identity.</li>
+                        <li>Integration programs lack culturally engaging, empathetic tools.</li>
+                        <li>Children are growing up disconnected from their heritage.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content grid-2">
+                <div>
+                    <ul>
+                        <li><strong>AI-Driven Storytelling:</strong> Interactive folktales adapted for age and empathy.</li>
+                        <li><strong>Multilingual:</strong> Seamless reading across generations and languages.</li>
+                        <li><strong>Pedagogical Core:</strong> More than entertainment; it's a bridge to identity.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>The <span class="highlight">Arfur</span> Solution</h2>
+                    <p>Think of it as the pedagogical "Netflix for cultural folktales" â preserving heritage through advanced AI.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content grid-2">
+                <div>
+                    <h2>Filipino Tales<br><span class="highlight">Proof of Concept</span></h2>
+                    <p>Not just an idea. A live, production-ready platform.</p>
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Authentic Stories</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">25+</span>
+                            <span class="stat-label">Languages (AI TTS)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="placeholder">
+                    [IMAGE: High-Fidelity App UI Mockup of Filipino Tales Duo-Reading Mode]
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content grid-2">
+                <div class="placeholder">
+                    [IMAGE: Nordic Tales Dashboard - Integration Hub & Family Portal]
+                </div>
+                <div>
+                    <h2>Nordic Tales<br><span class="highlight">The Growth Engine</span></h2>
+                    <p>Targeting the Nordic diaspora and state-backed integration programs.</p>
+                    <ul>
+                        <li><strong>B2C:</strong> Connecting Nordic diaspora families globally.</li>
+                        <li><strong>B2G:</strong> Essential tools for municipalities and refugee integration.</li>
+                        <li>Covers 6+ regions (Norway, Sweden, Denmark, Finland, Iceland, SÃ¡mi).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content center-text">
+                <h2>Cloud-Native & <span class="highlight">AI-First</span></h2>
+                <p>A scalable architecture allowing us to launch entirely new cultural regions in 2-3 months.</p>
+                <br>
+                <div class="grid-2" style="text-align: left; margin-top: 2rem;">
+                    <div>
+                        <ul>
+                            <li><strong>AI Engine:</strong> Claude Opus (Story/Translation)</li>
+                            <li><strong>Generative Media:</strong> Midjourney V7 + FLUX Context, ElevenLabs TTS</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul>
+                            <li><strong>Infrastructure:</strong> React 18, TypeScript, Supabase/PostgreSQL</li>
+                            <li><strong>Dev Pipeline:</strong> AI-assisted (Cursor Agent), 1000+ commits, robust CI/CD</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content grid-2">
+                <div>
+                    <h2>A Massive <span class="highlight">Global Market</span></h2>
+                    <p>Bridging the multi-billion dollar EdTech and public integration sectors.</p>
+                </div>
+                <div>
+                    <div class="stats-row" style="flex-wrap: wrap;">
+                        <div class="stat-box" style="margin-bottom: 2rem; width: 45%;">
+                            <span class="stat-number">10M+</span>
+                            <span class="stat-label">Filipino Diaspora</span>
+                        </div>
+                        <div class="stat-box" style="margin-bottom: 2rem; width: 45%;">
+                            <span class="stat-number">Multi-M</span>
+                            <span class="stat-label">Nordic Diaspora</span>
+                        </div>
+                        <div class="stat-box" style="width: 100%;">
+                            <span class="stat-number">B2G</span>
+                            <span class="stat-label">Massive Nordic Public Integration Budgets</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content">
+                <h2 class="center-text">Dual Revenue Streams</h2>
+                <div class="flow-container">
+                    <div class="flow-step">
+                        <h3 style="color: var(--secondary); font-size: 2rem;">B2C</h3>
+                        <p style="font-size: 1.2rem;">Premium Subscriptions</p>
+                        <span class="stat-label">Targeting global diaspora families</span>
+                    </div>
+                    <div class="flow-step">
+                        <h3 style="color: var(--accent); font-size: 2rem;">B2G & B2B</h3>
+                        <p style="font-size: 1.2rem;">Enterprise Licensing</p>
+                        <span class="stat-label">Municipalities, Schools, Libraries</span>
+                    </div>
+                </div>
+                <p class="center-text" style="margin-top: 3rem;"><strong>The Advantage:</strong> Every new culture is a new revenue stream with near-zero marginal cost.</p>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content grid-2">
+                <div>
+                    <h2>Traction & <br><span class="highlight">Milestones</span></h2>
+                    <ul>
+                        <li><strong>Filipino Tales:</strong> Live & Production-Ready â</li>
+                        <li><strong>Rebranding:</strong> "Arfur" rollout complete â</li>
+                        <li><strong>Tech Stack:</strong> Proven, tested, and scalable â</li>
+                        <li><strong>Next Up:</strong> Nordic Tales Launch & Innovation Norway Grant ð</li>
+                    </ul>
+                </div>
+                <div class="placeholder">
+                    [IMAGE: Product Roadmap / Commit History / Live User Dashboard]
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content">
+                <h2>The Team: <span class="highlight">Living the Mission</span></h2>
+                <p>A multicultural founding family combining technical elite execution with clinical expertise.</p>
+                <div class="grid-2" style="margin-top: 3rem;">
+                    <div class="placeholder" style="min-height: 200px; padding: 1.5rem;">
+                        [IMAGE: MJ - CEO / Tech & Design]
+                    </div>
+                    <div class="placeholder" style="min-height: 200px; padding: 1.5rem;">
+                        [IMAGE: Kona - Co-founder / Cultural & Global Ops]
+                    </div>
+                    <div class="placeholder" style="min-height: 200px; padding: 1.5rem; grid-column: span 2;">
+                        [IMAGE: Co-founder - Specialist Child Psychologist (IOSE Platform Lead)]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content center-text">
+                <h2>Driven by <span class="highlight">Nordic Values</span></h2>
+                <p>Ethics, empathy, sustainability, and radical transparency.</p>
+                <div class="stats-row" style="justify-content: center; margin-top: 4rem;">
+                    <div class="stat-box" style="text-align: center; margin: 0 2rem;">
+                        <span class="stat-number">10%</span>
+                        <span class="stat-label">To Child Charities (PH)</span>
+                    </div>
+                    <div class="stat-box" style="text-align: center; margin: 0 2rem;">
+                        <span class="stat-number">10%</span>
+                        <span class="stat-label">To Environmental Care</span>
+                    </div>
+                    <div class="stat-box" style="text-align: center; margin: 0 2rem;">
+                        <span class="stat-number">Pro Bono</span>
+                        <span class="stat-label">For Integration Programs</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content grid-2">
+                <div>
+                    <h2>Funding <span class="highlight">Ask</span></h2>
+                    <p>Seeking initial capital to accelerate Nordic market penetration.</p>
+                    <ul>
+                        <li><strong>Target:</strong> 2.0 â 3.0 MNOK</li>
+                        <li><strong>Primary:</strong> Innovation Norway support</li>
+                        <li><strong>Secondary:</strong> Strategic Angels</li>
+                    </ul>
+                </div>
+                <div class="placeholder">
+                    [CHART: Use of Funds - 12 to 18 Months to Break-Even]
+                    <br><br>Marketing | Nordic Tales Dev | Team Expansion
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content center-text">
+                <h2>The <span class="highlight">Tales Universe</span></h2>
+                <p>One core technology platform. Infinite cultural products.</p>
+                
+                <div class="flow-container">
+                    <div class="flow-step" style="border-color: var(--secondary);">Filipino Tales</div>
+                    <div class="flow-arrow">â</div>
+                    <div class="flow-step" style="border-color: var(--accent);">Nordic Tales</div>
+                    <div class="flow-arrow">â</div>
+                    <div class="flow-step">African Tales</div>
+                    <div class="flow-arrow">â</div>
+                    <div class="flow-step">Latin Tales...</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div class="slide-content center-text">
+                <h2 class="title-huge" style="font-size: 5rem; margin-bottom: 0.5rem;">Let's Preserve Heritage.</h2>
+                <p class="tagline" style="margin-bottom: 4rem;">Together.</p>
+                
+                <div class="placeholder" style="width: 200px; height: 200px; min-height: 200px; margin: 0 auto; border-radius: 12px;">
+                    [QR CODE: Filipino Tales Demo]
+                </div>
+                <p style="margin-top: 2rem; color: var(--text-main); font-weight: 500;">hello@arfur.ai  |  arfur.ai</p>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auto-redirect mobile users
+            if (window.innerWidth <= 768 && !window.location.search.includes('desktop=true')) {
+                window.location.href = 'mobile.html';
+            }
+
+            const slides = document.querySelectorAll('.slide');
+            const counter = document.getElementById('slide-counter');
+            const progressBar = document.getElementById('progress-bar');
+            let currentSlide = 0;
+
+            function updateSlide() {
+                slides.forEach((slide, index) => {
+                    if (index === currentSlide) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
+                    }
+                });
+                
+                counter.innerText = `${currentSlide + 1} / ${slides.length}`;
+                progressBar.style.width = `${((currentSlide) / (slides.length - 1)) * 100}%`;
+            }
+
+            function nextSlide() {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    updateSlide();
+                }
+            }
+
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlide();
+                }
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                }
+            });
+
+            // Optional click navigation
+            document.getElementById('deck').addEventListener('click', (e) => {
+                // Click right half of screen for next, left half for prev
+                if (e.clientX > window.innerWidth / 2) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            });
+
+            updateSlide();
+        });
+    </script>
+</body>
+</html>
